@@ -2,6 +2,7 @@ package kr.hqservice.auth.command
 
 import kr.hqservice.auth.HQDiscordAuth
 import kr.hqservice.auth.extension.applyText
+import kr.hqservice.auth.extension.async
 import kr.hqservice.auth.extension.copyToClipboard
 import kr.hqservice.auth.extension.sendMessages
 import kr.hqservice.auth.repository.data.impl.AuthBotSetting
@@ -36,7 +37,7 @@ class AuthCommand(
             sender.sendMessages(authMessage.processAuthorizing)
             return true
         }
-        if (authRepository.contains(uuid)) {
+        if (authRepository.containsKey(uuid)) {
             sender.sendMessages(authMessage.authorized)
             return true
         }
@@ -45,10 +46,12 @@ class AuthCommand(
         val code = authCache.get(uuid).toString()
         code.copyToClipboard()
 
-        if (authBotSetting.logEnable) {
-            authBotController.logChannel?.sendMessage(
-                "`[${Time.getNowTime().toText()}] ${sender.name}(${uuid})님이 인증 코드를 발급받았습니다. (인증 코드: $code)`"
-            )?.queue()
+        async {
+            if (authBotSetting.logEnable) {
+                authBotController.logChannel?.sendMessage(
+                    "`[${Time.getNowTime().toText()}] ${sender.name}(${uuid})님이 인증 코드를 발급받았습니다. (인증 코드: $code)`"
+                )?.queue()
+            }
         }
 
         sender.sendMessages(authMessage.start.applyText("%code%", code))

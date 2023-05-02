@@ -16,25 +16,40 @@ class AuthRepository(
     private val file = File(plugin.dataFolder, path)
     private val config = YamlConfiguration.loadConfiguration(file)
 
-    private val authorizedPlayers = mutableSetOf<UUID>()
+    private val authorizedPlayers = mutableMapOf<UUID, Long>()
 
     var isChanged = true
 
     override fun load() {
         if (!config.contains("authorized-players")) return
-        authorizedPlayers.addAll(config.getStringList("authorized-players").map(UUID::fromString))
+        config.getConfigurationSection("authorized-players").let { section ->
+            section.getKeys(false).forEach { uuidText ->
+                val uuid = UUID.fromString(uuidText)
+                val discordId = section.getLong(uuidText)
+                authorizedPlayers[uuid] = discordId
+            }
+        }
     }
 
     override fun save() {
-        config.set("authorized-players", authorizedPlayers.map(UUID::toString))
+        config.set("authorized-players", null)
+        authorizedPlayers.forEach { (uuid, discordId) ->
+            config.set("authorized-players.$uuid", discordId)
+        }
         config.save(file)
         isChanged = false
     }
 
-    fun contains(uuid: UUID) = authorizedPlayers.contains(uuid)
+    fun containsKey(uuid: UUID) = authorizedPlayers.containsKey(uuid)
 
-    fun add(uuid: UUID) {
-        authorizedPlayers.add(uuid)
+    fun containsValue(discordId: Long) = authorizedPlayers.containsValue(discordId)
+
+    fun get(uuid: UUID): Long? {
+        return authorizedPlayers[uuid]
+    }
+
+    fun set(uuid: UUID, discordId: Long) {
+        authorizedPlayers[uuid] = discordId
         isChanged = true
     }
 

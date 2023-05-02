@@ -1,6 +1,7 @@
 package kr.hqservice.auth
 
 import kr.hqservice.auth.cache.AuthCache
+import kr.hqservice.auth.command.AuthAdminCommand
 import kr.hqservice.auth.command.AuthCommand
 import kr.hqservice.auth.controller.AuthBotController
 import kr.hqservice.auth.repository.AuthConfigRepository
@@ -57,7 +58,8 @@ class HQDiscordAuth : JavaPlugin() {
 
         server.scheduler.runTaskTimerAsynchronously(this, AuthSaveRepository(authRepository), 2400, 2400)
 
-        getCommand("인증")?.executor = AuthCommand(this)
+        getCommand("인증제거")?.setExecutor(AuthAdminCommand(this))
+        getCommand("인증")?.setExecutor(AuthCommand(this))
     }
 
     override fun onDisable() {

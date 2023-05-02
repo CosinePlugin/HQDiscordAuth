@@ -7,5 +7,8 @@ softdepend:
   - MS-Core
 
 commands:
+  인증제거:
+    permission: op
+    description: 디스코드 인증 제거 명령어입니다.
   인증:
     description: 디스코드 인증 명령어입니다.
