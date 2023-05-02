@@ -1,0 +1,109 @@
+message:
+  # 접두사
+  prefix: "&b[ 인증 ]&f"
+
+  # 인증 명령어 입력 시
+  # %prefix% = 위 prefix, %code% = 인증 코드
+  start:
+    - ""
+    - "%prefix% 인증 코드가 발급되었습니다."
+    - "%prefix% 디스코드 인증 채널에서 인증해주세요."
+    - "§7└ 인증 코드: &a%code%"
+    - "  §7└ 클립보드에 복사되었습니다."
+    - "  §7└ 30초 후에 인증 코드가 자동으로 &c만료&7됩니다."
+    - ""
+
+  # 인증 성공 시
+  # %discord% = 디스코드 이름 및 태그
+  success:
+    - "%prefix% %discord% 계정과 연동되었습니다."
+
+  # 인증 실패 시
+  fail:
+    - "%prefix% 인증에 실패하였습니다."
+
+  # 인증 진행 상태일 시
+  process-authorizing:
+    - "%prefix% 인증 코드가 발급된 상태입니다."
+
+  # 인증된 상태
+  authorized:
+    - "%prefix% 이미 인증된 상태입니다."
+
+  # 인증 코드 만료
+  expiration:
+    - "%prefix% 인증 코드가 만료되었습니다."
+
+bot-setting:
+  # 봇 토큰
+  token: "token"
+
+  # 로그 기록 활성화
+  log: true
+
+  # 봇 ID 관련
+  id:
+    # 디스코드 방 ID
+    guild: 0
+
+    # 인증 채널 ID
+    auth: 0
+
+    # 로그 채널 ID
+    log: 0
+
+  # 봇 정보
+  info:
+    # 상태 [ ONLINE(온라인), DO_NOT_DISTURB(다른 용무중), IDLE(자리비움), INVISIBLE(오프라인 표시), OFFLINE(오프라인) ]
+    status: "ONLINE"
+
+    # 상태 메시지
+    status-message: "인증 시스템 관리"
+
+  # 인증 완료 시
+  success-auth:
+    changed-role:
+      # 역할 변경 활성화
+      enable: true
+
+      # 부여할 역할 ID
+      roles:
+        - 0
+        #- 0
+    changed-name:
+      # 이름 변경 활성화
+      enable: true
+
+      # 바뀔 이름 [ %minecraft_name% ]
+      name: "%minecraft_name%"
+
+# 메시지 디자인
+message-setting:
+  # 엠베드
+  embed:
+    title: "인증"
+
+    description: "아래 버튼 클릭 시 인증을 진행합니다."
+
+    tumbnail: "https://cdn.discordapp.com/attachments/1021796545873575976/1102522711764385822/193.png"
+
+    #image: "https://cdn.discordapp.com/attachments/1021796545873575976/1102522711764385822/193.png"
+
+    #author:
+      #name: "링크"
+      #url: "https://google.co.kr"
+
+    # 순서 - 이름, 값, 같은 줄
+    #field:
+      #- "field-name, field-value, true"
+      #- "field-name2, field-value2, false"
+
+    #footer: "XXX 서버"
+
+  # 버튼
+  button:
+    # 이름
+    info: "인증"
+
+    # 스타일 [ SUCCESS, DANGER, LINK, PRIMARY, SECONDARY ]
+    style: "SUCCESS"

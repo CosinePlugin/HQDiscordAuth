@@ -1,0 +1,11 @@
+name: HQDiscordAuth
+version: 1.0.0
+api-version: 1.13
+main: kr.hqservice.auth.HQDiscordAuth
+authors: [ Cosine_A ]
+softdepend:
+  - MS-Core
+
+commands:
+  인증:
+    description: 디스코드 인증 명령어입니다.
