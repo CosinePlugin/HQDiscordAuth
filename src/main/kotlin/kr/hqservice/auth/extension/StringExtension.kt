@@ -27,9 +27,3 @@ internal fun List<String>.applyColor(): MutableList<String> {
 internal fun List<String>.applyText(from: String, to: String): MutableList<String> {
     return map { it.replace(from, to) }.toMutableList()
 }
-
-internal fun String.copyToClipboard() {
-    val data = StringSelection(this)
-    val clipboard = Toolkit.getDefaultToolkit().systemClipboard
-    clipboard.setContents(data, data)
-}

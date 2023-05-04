@@ -3,7 +3,6 @@ package kr.hqservice.auth.command
 import kr.hqservice.auth.HQDiscordAuth
 import kr.hqservice.auth.extension.applyText
 import kr.hqservice.auth.extension.async
-import kr.hqservice.auth.extension.copyToClipboard
 import kr.hqservice.auth.extension.sendMessages
 import kr.hqservice.auth.repository.data.impl.AuthBotSetting
 import kr.hqservice.auth.repository.data.impl.AuthMessage
@@ -44,7 +43,6 @@ class AuthCommand(
         authCache.add(uuid)
 
         val code = authCache.get(uuid).toString()
-        code.copyToClipboard()
 
         async {
             if (authBotSetting.logEnable) {
