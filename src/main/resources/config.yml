@@ -1,0 +1,132 @@
+# 인증을 무시할 관리자의 UUID
+admins:
+  - "f0e6d8a9-74d0-4a8d-8479-3f72fefe21bc"
+
+# 인증 방식
+# JOIN = 접속 시 인증
+# COMMAND = 명령어 입력 시 인증
+auth-type: COMMAND
+
+# 미인증 시 사용 가능한 명령어 목록
+# └ 첫 명령어만 적으면 됩니다
+allowed-commands:
+  - "/인증"
+
+# 접속 인증 방식을 사용할 때 접속 화면에 띄워줄 인증 메시지
+# %code% = 코드
+join-auth-messages:
+  - "&a[ 인증 ]"
+  - "&f코드: %code%"
+  - ""
+  - "&7디스코드 인증 채널에서 인증해주세요."
+
+bot:
+  # 채널 ID
+  channel-id:
+    # 인증 채널
+    auth: 0
+
+    # 로그 채널
+    log: 0
+
+  # 인증 완료 시
+  success-auth:
+    changed-role:
+      enabled: false
+      # 역할 ID
+      role-id: 0
+
+    changed-nickname:
+      enabled: true
+      # %minecraft_name% = 유저 마인크래프트 닉네임
+      nickname: "%minecraft_name%"
+
+  # 인증 임베드
+  auth-embed:
+    color: "0eed16"
+
+    title: "인증"
+
+    #title-url: "https://www.google.co.kr/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+
+    description: "아래 버튼 클릭 시 인증을 진행합니다."
+
+    #thumbnail: "https://www.google.co.kr/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+
+    #image: "https://www.google.co.kr/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+
+    #author-name: "링크"
+    #author-url: "https://google.co.kr"
+    #author-icon-url: "https://google.co.kr"
+
+    # 순서 - 이름, 값, 같은 줄
+    #fields:
+      #- "field-name, field-value, true"
+      #- "field-name2, field-value2, false"
+
+    #footer: "XXX 서버"
+
+  # 로그 임베드
+  # %player_name% = 유저 이름
+  # %player_uuid% = 유저 UUID
+  # %discord_id_long% = 디스코드 ID (숫자)
+  # %discord_id_string% = 디스코드 ID (문자)
+  # %discord_name% = 디스코드 닉네임
+  # %short_time%, %full_time% = 인증 완료 시간
+  log-embed:
+    color: "0eed16"
+    title: "인증 성공"
+    thumbnail: "https://cravatar.eu/avatar/%player_uuid%/128.png"
+    fields:
+      - "마인크래프트, [%player_name%](https://ko.namemc.com/profile/%player_uuid%), false"
+      - "디스코드, <@%discord_id_long%>, false"
+    footer: "%full_time%"
+
+  # 인증 버튼
+  auth-button:
+    # 스타일 [ SUCCESS, DANGER, LINK, PRIMARY, SECONDARY ]
+    style: "SUCCESS"
+
+    # 이름
+    label: "인증"
+
+    # 이모지 (유니코드)
+    # ex) U+2705
+    #emoji: "U+2705"
+
+  # 인증 코드 입력창
+  auth-modal:
+    title: "인증"
+    label: "입력"
+    placeholder: "발급받은 코드를 입력해주세요."
+
+message:
+  suggest-auth:
+    - "&6[인증] &f'/인증' 명령어를 통해 인증을 진행해주세요."
+
+  not-support-auth-type:
+    - "&6[인증] &f현재 해당 인증 방식을 사용할 수 없습니다."
+  
+  already-authorized:
+    - "&6[인증] &f이미 인증된 상태입니다."
+  
+  alreay-generated-auth-code:
+    - "&6[인증] &f이미 인증 코드가 발급된 상태입니다."
+  
+  # %code% = 발급받은 코드
+  generate-auth-code:
+    - ""
+    - "&6[인증] &f인증 코드가 발급되었습니다. 디스코드 인증 채널에서 인증해주세요."
+    - "&7└ 인증 코드: &a%code%"
+    - "&7└ 30초 후에 인증 코드가 자동으로 &c만료&7됩니다."
+    - ""
+  
+  expired-auth-code:
+    - "&6[인증] &f인증 코드가 만료되었습니다."
+  
+  # %discord% = 연동된 디스코드
+  success-auth:
+    - "&6[인증] &f인증에 성공하여 %discord% 계정과 연동되었습니다."
+  
+  blocked-command-before-auth:
+    - "&6[인증] &f인증 전에는 명령어를 사용할 수 없습니다."

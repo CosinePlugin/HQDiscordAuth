@@ -1,0 +1,11 @@
+name: HQDiscordAuth
+main: kr.cosine.discordauth.HQDiscordAuth
+version: 1.0.0
+api-version: 1.17
+author: Cosine_A
+depend:
+  - HQFramework
+  - HQDiscordAPI
+
+commands:
+  인증: {}
