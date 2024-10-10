@@ -53,7 +53,7 @@ class AuthListener(
         val playerUniqueId = player.uniqueId
         if (settingRegistry.isAdmin(playerUniqueId)) return
         if (!authService.isAuthorizedPlayer(playerUniqueId)) {
-            Message.SUGGEST_AUTH.sendMessage(player)
+            authService.sendSuggestAuthMessage(player)
         }
     }
 

@@ -20,6 +20,10 @@ import net.dv8tion.jda.api.interactions.components.text.TextInput
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle
 import net.dv8tion.jda.api.interactions.modals.Modal
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.HoverEvent
+import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
 import java.awt.Color
 import java.util.UUID
 import java.util.logging.Logger
@@ -43,6 +47,7 @@ class SettingConfig(
         loadLogEmbed()
         loadAuthButton()
         loadAuthModal()
+        loadSuggestAuthMessageDelay()
         loadMessage()
         sendAuthMessage()
     }
@@ -185,6 +190,11 @@ class SettingConfig(
                 .build()
             settingRegistry.setAuthModal(modal)
         }
+    }
+
+    private fun loadSuggestAuthMessageDelay() {
+        val suggestAuthMessageDelay = config.getLong("suggest-auth-message-delay")
+        settingRegistry.setSuggestAuthMessageDelay(suggestAuthMessageDelay)
     }
 
     private fun loadMessage() {

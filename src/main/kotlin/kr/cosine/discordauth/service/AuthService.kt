@@ -12,6 +12,8 @@ import kr.cosine.discordauth.registry.SettingRegistry
 import kr.cosine.discordauth.util.TimeUtils
 import kr.cosine.discordauth.util.Timer
 import kr.hqservice.framework.bukkit.core.HQBukkitPlugin
+import kr.hqservice.framework.bukkit.core.coroutine.bukkitDelay
+import kr.hqservice.framework.bukkit.core.coroutine.extension.BukkitMain
 import kr.hqservice.framework.global.core.component.Service
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
@@ -144,6 +146,19 @@ class AuthService(
 
     fun isAuthorizedPlayer(uniqueId: UUID): Boolean {
         return authorizedPlayerRegistry.isAuthorizedPlayer(uniqueId)
+    }
+
+    fun sendSuggestAuthMessage(player: Player) {
+        val suggestAuthMessageDelay = settingRegistry.getSuggestAuthMessageDelay()
+        val send = { Message.SUGGEST_AUTH.sendMessage(player) }
+        if (suggestAuthMessageDelay == 0L) {
+            send()
+        } else {
+            plugin.launch(Dispatchers.BukkitMain) {
+                bukkitDelay(suggestAuthMessageDelay)
+                send()
+            }
+        }
     }
 
     suspend fun removeAuth(name: String): Boolean {

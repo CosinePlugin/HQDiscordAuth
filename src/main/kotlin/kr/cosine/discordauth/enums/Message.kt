@@ -1,5 +1,9 @@
 package kr.cosine.discordauth.enums
 
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.HoverEvent
+import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.entity.Player
 
 enum class Message(
@@ -28,14 +32,45 @@ enum class Message(
 
     fun sendMessage(player: Player, replace: (String) -> String = { it }) {
         if (messages.isEmpty()) return
-        messages.forEach { message ->
-            player.sendMessage(replace(message))
-        }
+        val textComponent = messages.joinToString("\n", transform = replace)
+            .run(::createLinkedTextComponent)
+        player.spigot().sendMessage(textComponent)
     }
 
     companion object {
         fun of(text: String): Message? {
             return runCatching { valueOf(text.uppercase().replace("-", "_")) }.getOrNull()
+        }
+
+        private val linkedMessageRegex = Regex("`\\[(.*?)](<(.*?)>)?\\((.*?)\\)`")
+
+        private fun createLinkedTextComponent(text: String): TextComponent {
+            val matches = linkedMessageRegex.findAll(text)
+
+            val component = TextComponent()
+            var currentIndex = 0
+
+            for (match in matches) {
+                val (messageText, _, hoverText, link) = match.destructured
+                val textBeforeLink = text.substring(currentIndex, match.range.first)
+                if (textBeforeLink.isNotBlank()) {
+                    component.addExtra(textBeforeLink)
+                }
+                val messageComponent = TextComponent(messageText)
+                if (hoverText.isNotEmpty()) {
+                    val hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(hoverText))
+                    messageComponent.hoverEvent = hoverEvent
+                }
+                messageComponent.clickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, link)
+                component.addExtra(messageComponent)
+                currentIndex = match.range.last + 1
+            }
+
+            val remainingText = text.substring(currentIndex)
+            if (remainingText.isNotBlank()) {
+                component.addExtra(remainingText)
+            }
+            return component
         }
     }
 }

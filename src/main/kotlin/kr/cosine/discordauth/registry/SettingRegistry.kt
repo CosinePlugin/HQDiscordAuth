@@ -36,6 +36,8 @@ class SettingRegistry {
 
     private var changedNickname: ChangedNickname? = null
 
+    private var suggestAuthMessageDelay = 10L
+
     fun isAdmin(uniqueId: UUID): Boolean {
         return admins.contains(uniqueId)
     }
@@ -132,6 +134,14 @@ class SettingRegistry {
         this.changedNickname = changedNickname
     }
 
+    fun getSuggestAuthMessageDelay(): Long {
+        return suggestAuthMessageDelay
+    }
+
+    fun setSuggestAuthMessageDelay(suggestAuthMessageDelay: Long) {
+        this.suggestAuthMessageDelay = suggestAuthMessageDelay
+    }
+
     fun clear() {
         admins = emptyList()
         authType = AuthType.COMMAND
@@ -145,6 +155,7 @@ class SettingRegistry {
         authModal = null
         changedRole = null
         changedNickname = null
+        suggestAuthMessageDelay = 10
     }
 
     companion object {
