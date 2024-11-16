@@ -17,7 +17,6 @@ class AuthAdminCommand(
     private val authorizedPlayerConfig: AuthorizedPlayerConfig,
     private val authService: AuthService
 ) {
-
     @CommandExecutor("제거", "해당 유저의 인증을 제거합니다.", priority = 1)
     suspend fun removeAuth(
         sender: CommandSender,

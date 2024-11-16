@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import kr.cosine.discordapi.service.BotService
 import kr.cosine.discordauth.enums.AuthType
 import kr.cosine.discordauth.enums.Message
+import kr.cosine.discordauth.extension.textComponentArrayOf
 import kr.cosine.discordauth.registry.AuthCodeRegistry
 import kr.cosine.discordauth.registry.AuthorizedPlayerRegistry
 import kr.cosine.discordauth.registry.SettingRegistry
@@ -17,6 +18,10 @@ import kr.hqservice.framework.bukkit.core.coroutine.extension.BukkitMain
 import kr.hqservice.framework.global.core.component.Service
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.HoverEvent
+import net.md_5.bungee.api.chat.TextComponent
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.time.LocalDateTime
 import java.util.UUID
@@ -176,6 +181,60 @@ class AuthService(
             }
             authorizedPlayerRegistry.removeAuthorizedPlayer(targetUniqueId)
             return@withContext true
+        }
+    }
+
+    fun showDiscordNicknameAndIdByMinecraftUniqueIdOrName(sender: CommandSender, uniqueIdOrName: String) {
+        plugin.launch(Dispatchers.IO) {
+            val target = runCatching {
+                val targetUniqueId = UUID.fromString(uniqueIdOrName)
+                server.getOfflinePlayer(targetUniqueId)
+            }.getOrNull() ?: server.getOfflinePlayer(uniqueIdOrName)
+            val targetUniqueId = target.uniqueId
+            val targetDiscordId = authorizedPlayerRegistry.findDiscordId(targetUniqueId) ?: run {
+                sender.sendMessage("§c인증되지 않은 유저입니다.")
+                return@launch
+            }
+            val targetMember = botService.findMemberById(targetDiscordId) ?: run {
+                sender.sendMessage("§c디스코드 방에 없는 유저입니다.")
+                return@launch
+            }
+            sender.sendMessage("§6${target.name}님의 디스코드 정보")
+            sender.spigot().sendMessage(createClipboardTextComponent("UUID", "§7(${targetUniqueId})", "$targetUniqueId"))
+            sender.sendInfoMessage("문자 아이디", targetMember.user.name)
+            sender.sendInfoMessage("숫자 아이디", "${targetMember.idLong}")
+            sender.sendInfoMessage("원본 닉네임", targetMember.user.effectiveName)
+            sender.sendInfoMessage("변경된 닉네임", targetMember.effectiveName)
+        }
+    }
+
+    fun showMinecraftNameAndUniqueIdByDiscordId(sender: CommandSender, discordId: Long) {
+        plugin.launch(Dispatchers.IO) {
+            val targetUniqueId = authorizedPlayerRegistry.findUniqueIdByDiscordId(discordId) ?: run {
+                sender.sendMessage("§c인증하지 않은 유저입니다.")
+                return@launch
+            }
+            val target = server.getOfflinePlayer(targetUniqueId)
+            val targetMember = botService.findMemberById(discordId)
+            sender.sendMessage("§6${targetMember?.user?.name ?: "§c불러오지 못함"}§6님의 마인크래프트 정보")
+            sender.spigot().sendMessage(createClipboardTextComponent("디스코드 아이디", "§7(${discordId})", "$discordId"))
+            sender.sendInfoMessage("마크 닉네임", "${target.name}")
+            sender.sendInfoMessage("마크 UUID", "$targetUniqueId")
+        }
+    }
+
+    private fun CommandSender.sendInfoMessage(title: String, text: String) {
+        val textComponent = TextComponent().apply {
+            addExtra(TextComponent("§f└ $title: "))
+            addExtra(createClipboardTextComponent(title, text))
+        }
+        spigot().sendMessage(textComponent)
+    }
+
+    private fun createClipboardTextComponent(title: String, text: String, copy: String = text): TextComponent {
+        return TextComponent("§a$text").apply {
+            hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, textComponentArrayOf("§f클릭 시 ${title}을(를) 복사합니다."))
+            clickEvent = ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, copy)
         }
     }
 }

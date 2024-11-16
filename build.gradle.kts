@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "kr.cosine.discordauth"
-version = "1.1.0"
+version = "1.2.0"
 
 repositories {
     maven("https://maven.hqservice.kr/repository/maven-public")

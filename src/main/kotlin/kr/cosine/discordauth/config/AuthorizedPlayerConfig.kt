@@ -11,7 +11,6 @@ class AuthorizedPlayerConfig(
     plugin: Plugin,
     private val authorizedPlayerRegistry: AuthorizedPlayerRegistry
 ) {
-
     private val gson = Gson()
 
     private val file = File(plugin.dataFolder, "authorized-player.json")

@@ -44,4 +44,8 @@ class AuthorizedPlayerRegistry {
         authorizedPlayerMap.remove(uniqueId)
         isChanged = true
     }
+
+    fun getDiscordIds(): List<Long> {
+        return authorizedPlayerMap.values.toList()
+    }
 }
