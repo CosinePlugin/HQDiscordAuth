@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.time.LocalDateTime
@@ -100,7 +101,7 @@ class AuthService(
             return reply("올바르지 않은 코드입니다.")
         }
         val playerUniqueId = authCodeRegistry.removeByAuthCode(code) ?: return reply("UUID를 찾지 못했습니다.")
-        val offlinePlayer = server.getOfflinePlayer(playerUniqueId)
+        val offlinePlayer = Bukkit.getOfflinePlayer(playerUniqueId)
         val minecraftName = offlinePlayer.name ?: return reply("마인크래프트 닉네임을 찾지 못했습니다.")
 
         authorizedPlayerRegistry.setAuthorizedPlayer(playerUniqueId, userId)
@@ -168,7 +169,7 @@ class AuthService(
 
     suspend fun removeAuth(name: String): Boolean {
         return withContext(Dispatchers.IO) {
-            val targetOfflinePlayer = server.getOfflinePlayer(name)
+            val targetOfflinePlayer = Bukkit.getOfflinePlayer(name)
             val targetUniqueId = targetOfflinePlayer.uniqueId
             if (!isAuthorizedPlayer(targetUniqueId)) {
                 return@withContext false
@@ -188,8 +189,8 @@ class AuthService(
         plugin.launch(Dispatchers.IO) {
             val target = runCatching {
                 val targetUniqueId = UUID.fromString(uniqueIdOrName)
-                server.getOfflinePlayer(targetUniqueId)
-            }.getOrNull() ?: server.getOfflinePlayer(uniqueIdOrName)
+                Bukkit.getOfflinePlayer(targetUniqueId)
+            }.getOrNull() ?: Bukkit.getOfflinePlayer(uniqueIdOrName)
             val targetUniqueId = target.uniqueId
             val targetDiscordId = authorizedPlayerRegistry.findDiscordId(targetUniqueId) ?: run {
                 sender.sendMessage("§c인증되지 않은 유저입니다.")
@@ -214,7 +215,7 @@ class AuthService(
                 sender.sendMessage("§c인증하지 않은 유저입니다.")
                 return@launch
             }
-            val target = server.getOfflinePlayer(targetUniqueId)
+            val target = Bukkit.getOfflinePlayer(targetUniqueId)
             val targetMember = botService.findMemberById(discordId)
             sender.sendMessage("§6${targetMember?.user?.name ?: "§c불러오지 못함"}§6님의 마인크래프트 정보")
             sender.spigot().sendMessage(createClipboardTextComponent("디스코드 아이디", "§7(${discordId})", "$discordId"))
