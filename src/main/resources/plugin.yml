@@ -1,6 +1,6 @@
 name: HQDiscordAuth
 main: kr.cosine.discordauth.HQDiscordAuth
-version: 1.2.1
+version: 1.2.1-fix
 api-version: 1.17
 author: Cosine_A
 depend:

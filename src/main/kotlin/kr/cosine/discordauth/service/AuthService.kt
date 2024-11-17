@@ -16,6 +16,7 @@ import kr.hqservice.framework.bukkit.core.HQBukkitPlugin
 import kr.hqservice.framework.bukkit.core.coroutine.bukkitDelay
 import kr.hqservice.framework.bukkit.core.coroutine.extension.BukkitMain
 import kr.hqservice.framework.global.core.component.Service
+import kr.hqservice.framework.global.core.util.MojangAPI
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.md_5.bungee.api.chat.ClickEvent
@@ -101,8 +102,7 @@ class AuthService(
             return reply("올바르지 않은 코드입니다.")
         }
         val playerUniqueId = authCodeRegistry.removeByAuthCode(code) ?: return reply("UUID를 찾지 못했습니다.")
-        val offlinePlayer = Bukkit.getOfflinePlayer(playerUniqueId)
-        val minecraftName = offlinePlayer.name ?: return reply("마인크래프트 닉네임을 찾지 못했습니다.")
+        val minecraftName = MojangAPI.findPlayerNameByUniqueId(playerUniqueId) ?: return reply("마인크래프트 닉네임을 찾지 못했습니다.")
 
         authorizedPlayerRegistry.setAuthorizedPlayer(playerUniqueId, userId)
         authCodeRegistry.removeAuthCode(playerUniqueId)
@@ -118,8 +118,8 @@ class AuthService(
             botService.modifyNickname(member, nickname).submit().join()
         }
 
-        val player = offlinePlayer.player
         val userName = user.name
+        val player = server.getPlayer(playerUniqueId)
         if (player != null) {
             Message.SUCCESS_AUTH.sendMessage(player) {
                 it.replace("%discord%", userName)
@@ -169,11 +169,8 @@ class AuthService(
 
     suspend fun removeAuth(name: String): Boolean {
         return withContext(Dispatchers.IO) {
-            val targetOfflinePlayer = Bukkit.getOfflinePlayer(name)
-            val targetUniqueId = targetOfflinePlayer.uniqueId
-            if (!isAuthorizedPlayer(targetUniqueId)) {
-                return@withContext false
-            }
+            val targetUniqueId = MojangAPI.findPlayerUniqueIdByName(name) ?: return@withContext false
+            if (!isAuthorizedPlayer(targetUniqueId)) return@withContext false
             val targetDiscordId = authorizedPlayerRegistry.getDiscordId(targetUniqueId)
             val targetMember = botService.findMemberById(targetDiscordId)
             val changedRole = settingRegistry.findChangedRole()
